@@ -1,11 +1,83 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class HomeController extends GetxController {
-  final counter = 0.obs;
+import '../../../core/models/order_card_model.dart';
+import '../../../core/utils/constants/colors.dart';
 
-  void increment() => counter.value++;
-  void decrement() {
-    if (counter.value > 0) counter.value--;
+class HomeController extends GetxController {
+  final currentPage = 0.obs;
+  final remainingOrders = 5.obs;
+
+  late final PageController pageController;
+
+  final List<OrderCardModel> orders = [
+    _demoOrder(
+      gradientColors: [AppColors.accentGreenStart, AppColors.accentGreenEnd],
+      borderColor: AppColors.accentGreenBorder,
+      textColor: AppColors.darkText,
+    ),
+    _demoOrder(
+      gradientColors: [AppColors.accentGreenStart, AppColors.accentGreenEnd],
+      borderColor: AppColors.accentGreenBorder,
+      textColor: AppColors.darkText,
+    ),
+    _demoOrder(
+      gradientColors: [AppColors.accentGreenStart, AppColors.accentGreenEnd],
+      borderColor: AppColors.accentGreenBorder,
+      textColor: AppColors.darkText,
+    ),
+    _demoOrder(
+      gradientColors: [
+        AppColors.accentPurpleStart,
+        AppColors.accentPurpleEnd,
+      ],
+      borderColor: AppColors.accentPurpleBorder,
+      textColor: Colors.white,
+    ),
+    _demoOrder(
+      gradientColors: [
+        AppColors.accentOrangeStart,
+        AppColors.accentOrangeEnd,
+      ],
+      borderColor: AppColors.accentOrangeBorder,
+      textColor: AppColors.darkText,
+    ),
+  ];
+
+  static OrderCardModel _demoOrder({
+    required List<Color> gradientColors,
+    required Color borderColor,
+    required Color textColor,
+  }) {
+    return OrderCardModel(
+      orderId: 'POS-1 Order-1',
+      customerName: 'Abs Corporation',
+      subtitle: '12.05.11',
+      table: 'Table-01',
+      actionLabel: 'Ongoing',
+      gradientColors: gradientColors,
+      borderColor: borderColor,
+      textColor: textColor,
+      items: const [
+        OrderItemModel(name: 'A4Ttech Keyboard', quantity: 1),
+        OrderItemModel(name: 'Mouse + Keyboard', quantity: 1),
+        OrderItemModel(name: 'HP Monitor', quantity: 1),
+        OrderItemModel(name: 'A4Ttech Mouse', quantity: 1),
+      ],
+    );
   }
-  void reset() => counter.value = 0;
+
+  @override
+  void onInit() {
+    super.onInit();
+    pageController = PageController(initialPage: currentPage.value);
+  }
+
+  @override
+  void onClose() {
+    pageController.dispose();
+    super.onClose();
+  }
+
+  void onPageChanged(int index) => currentPage.value = index;
 }

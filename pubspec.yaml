@@ -1,4 +1,4 @@
-name: softverse_cds
+name: softverse_kds
 description: "A Flutter project with GetX boilerplate."
 publish_to: 'none'
 version: 1.0.0+1
@@ -33,3 +33,5 @@ flutter:
 
   assets:
     - .env
+    - assets/icons/
+    - assets/images/

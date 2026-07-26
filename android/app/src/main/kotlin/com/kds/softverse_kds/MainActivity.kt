@@ -1,4 +1,4 @@
-package com.cds.softverse_cds
+package com.kds.softverse_kds
 
 import io.flutter.embedding.android.FlutterActivity
 
