@@ -70,37 +70,52 @@ class OrderCarousel extends StatelessWidget {
           ),
         ),
         SizedBox(height: 20.h),
-        SizedBox(
-          height: 355.h,
-          child: PageView.builder(
-            controller: pageController,
-            onPageChanged: onPageChanged,
-            itemCount: orders.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: OrderCard(order: orders[index]),
-              );
-            },
-          ),
-        ),
-        SizedBox(height: 16.h),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            for (var i = 0; i < orders.length; i++) ...[
-              if (i != 0) SizedBox(width: 8.w),
-              Container(
-                width: 8.w,
-                height: 8.w,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: _dotColor(i, currentPage),
+        if (orders.isEmpty)
+          Expanded(
+            child: Center(
+              child: Text(
+                'No orders',
+                style: getTextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.darkText,
                 ),
               ),
+            ),
+          )
+        else ...[
+          SizedBox(
+            height: 355.h,
+            child: PageView.builder(
+              controller: pageController,
+              onPageChanged: onPageChanged,
+              itemCount: orders.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  child: OrderCard(order: orders[index]),
+                );
+              },
+            ),
+          ),
+          SizedBox(height: 16.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              for (var i = 0; i < orders.length; i++) ...[
+                if (i != 0) SizedBox(width: 8.w),
+                Container(
+                  width: 8.w,
+                  height: 8.w,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _dotColor(i, currentPage),
+                  ),
+                ),
+              ],
             ],
-          ],
-        ),
+          ),
+        ],
       ],
     );
   }
