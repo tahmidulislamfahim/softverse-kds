@@ -9,6 +9,7 @@ import '../../../core/models/order_card_model.dart';
 import '../../../core/services/kds_order_store.dart';
 import '../../../core/services/main_station_client.dart';
 import '../../../core/utils/constants/colors.dart';
+import '../../recall/controller/recall_controller.dart';
 
 class HomeController extends GetxController {
   final currentPage = 0.obs;
@@ -87,13 +88,16 @@ class HomeController extends GetxController {
 
   Future<void> _handleStationEvent(MainStationEvent event) async {
     if (event.type == 'order_completed') {
-      await KdsOrderStore.instance.markCompleted(
+      await KdsOrderStore.instance.markCompletedAny([
         event.id,
-        fallback: event.order,
-      );
+        ...event.keys,
+      ], fallback: event.order);
       await SystemSound.play(SystemSoundType.alert);
       await HapticFeedback.mediumImpact();
       await loadOrders();
+      if (Get.isRegistered<RecallController>()) {
+        await Get.find<RecallController>().loadHistory();
+      }
       return;
     }
 

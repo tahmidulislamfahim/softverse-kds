@@ -9,9 +9,15 @@ import 'storage_service.dart';
 class MainStationEvent {
   final String type;
   final String id;
+  final List<String> keys;
   final KdsOrderModel? order;
 
-  const MainStationEvent({required this.type, this.id = '', this.order});
+  const MainStationEvent({
+    required this.type,
+    this.id = '',
+    this.keys = const [],
+    this.order,
+  });
 }
 
 class MainStationClient {
@@ -78,16 +84,19 @@ class MainStationClient {
   }
 
   Stream<MainStationEvent> watchOrders() async* {
-    final baseUrl = StorageService.mainStationUrl;
-    if (baseUrl == null || baseUrl.isEmpty) return;
-
-    final httpUri = Uri.parse(baseUrl);
-    final socketUri = httpUri.replace(
-      scheme: httpUri.scheme == 'https' ? 'wss' : 'ws',
-      path: '/kds/orders/stream',
-    );
-
     while (true) {
+      final baseUrl = StorageService.mainStationUrl;
+      if (baseUrl == null || baseUrl.isEmpty) {
+        await Future.delayed(const Duration(seconds: 2));
+        continue;
+      }
+
+      final httpUri = Uri.parse(baseUrl);
+      final socketUri = httpUri.replace(
+        scheme: httpUri.scheme == 'https' ? 'wss' : 'ws',
+        path: '/kds/orders/stream',
+      );
+
       try {
         final socket = await WebSocket.connect(
           socketUri.toString(),
@@ -103,9 +112,13 @@ class MainStationClient {
               order: KdsOrderModel.fromJson(order.cast<String, dynamic>()),
             );
           } else if (type == 'order_completed') {
+            final keys = data['keys'];
             yield MainStationEvent(
               type: type,
               id: data['id']?.toString() ?? '',
+              keys: keys is List
+                  ? keys.map((key) => key.toString()).toList()
+                  : const [],
               order: order is Map
                   ? KdsOrderModel.fromJson(order.cast<String, dynamic>())
                   : null,

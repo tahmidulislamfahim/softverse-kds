@@ -39,30 +39,29 @@ class KdsOrderStore {
   }
 
   Future<void> markCompleted(String id, {KdsOrderModel? fallback}) async {
-    final key = id.trim();
-    if (key.isEmpty) return;
+    await markCompletedAny([id], fallback: fallback);
+  }
 
-    final rows = await _database.query(
-      'orders',
-      where: 'id = ?',
-      whereArgs: [key],
-      limit: 1,
-    );
-    if (rows.isEmpty) {
+  Future<void> markCompletedAny(
+    Iterable<String> ids, {
+    KdsOrderModel? fallback,
+  }) async {
+    final keys = ids
+        .map((id) => id.trim())
+        .where((id) => id.isNotEmpty)
+        .toSet();
+    if (keys.isEmpty) return;
+
+    var row = await _findRow(keys);
+    if (row == null) {
       if (fallback == null) return;
       await upsert(fallback);
+      row = await _findRow(keys);
     }
-
-    final existing = await _database.query(
-      'orders',
-      where: 'id = ?',
-      whereArgs: [key],
-      limit: 1,
-    );
-    if (existing.isEmpty) return;
+    if (row == null) return;
 
     final payload =
-        jsonDecode(existing.first['payload'] as String) as Map<String, dynamic>;
+        jsonDecode(row['payload'] as String) as Map<String, dynamic>;
     payload['status'] = 'completed';
     payload['completedAt'] = DateTime.now().toIso8601String();
     await _database.update(
@@ -73,7 +72,7 @@ class KdsOrderStore {
         'updated_at': DateTime.now().toIso8601String(),
       },
       where: 'id = ?',
-      whereArgs: [key],
+      whereArgs: [row['id']],
     );
   }
 
@@ -113,5 +112,22 @@ class KdsOrderStore {
     final db = _db;
     if (db == null) throw StateError('KDS database is not ready');
     return db;
+  }
+
+  Future<Map<String, Object?>?> _findRow(Set<String> keys) async {
+    final rows = await _database.query('orders');
+    for (final row in rows) {
+      if (keys.contains(row['id']?.toString())) return row;
+      final payload =
+          jsonDecode(row['payload'] as String) as Map<String, dynamic>;
+      if (keys.contains(payload['id']?.toString()) ||
+          keys.contains(payload['checkoutId']?.toString()) ||
+          keys.contains(payload['orderId']?.toString()) ||
+          keys.contains(payload['orderNumber']?.toString()) ||
+          keys.contains(payload['tableId']?.toString())) {
+        return row;
+      }
+    }
+    return null;
   }
 }

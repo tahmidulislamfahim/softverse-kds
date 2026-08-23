@@ -11,7 +11,7 @@ class ControllerBinder extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut<ThemeController>(() => ThemeController(), fenix: true);
-    Get.lazyPut<HomeController>(() => HomeController(), fenix: true);
+    Get.put<HomeController>(HomeController(), permanent: true);
     Get.lazyPut<SplashController>(() => SplashController(), fenix: true);
     Get.lazyPut<PairController>(() => PairController(), fenix: true);
     Get.lazyPut<RecallController>(() => RecallController(), fenix: true);
