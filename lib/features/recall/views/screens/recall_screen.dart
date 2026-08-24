@@ -32,7 +32,7 @@ class RecallScreen extends GetView<RecallController> {
           onPageChanged: controller.onPageChanged,
         ),
       ),
-      bottomNavigationBar: const KdsBottomNav(currentIndex: 1),
+      bottomNavigationBar: const KdsBottomNav(),
     );
   }
 }

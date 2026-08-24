@@ -14,138 +14,187 @@ class PairScreen extends GetView<PairController> {
   @override
   Widget build(BuildContext context) {
     final c = context.appColors;
+    final keyboardOpen = MediaQuery.viewInsetsOf(context).bottom > 0;
 
     return Scaffold(
       backgroundColor: AppColors.brightBlue,
       body: Column(
         children: [
-          Expanded(
-            child: SafeArea(
-              bottom: false,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24.w),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      'assets/icons/Logo-white.png',
-                      width: 140.w,
-                    ),
-                    SizedBox(height: 24.h),
-                    Image.asset(
-                      'assets/images/mobiles.png',
-                      width: 260.w,
-                    ),
-                    SizedBox(height: 24.h),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Iconsax.wifi, color: Colors.white, size: 20.sp),
-                        SizedBox(width: 8.w),
-                        Text(
-                          'Softverse POS',
-                          style: getTextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
-                          ),
+          if (keyboardOpen)
+            SizedBox(height: MediaQuery.paddingOf(context).top + 16.h)
+          else
+            Expanded(
+              child: SafeArea(
+                bottom: false,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24.w),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset('assets/icons/Logo-white.png', width: 140.w),
+                      SizedBox(height: 24.h),
+                      Flexible(
+                        child: Image.asset(
+                          'assets/images/mobiles.png',
+                          width: 260.w,
+                          fit: BoxFit.contain,
                         ),
-                        SizedBox(width: 32.w),
-                        GestureDetector(
-                          onTap: controller.pairAsKds,
-                          child: Row(
-                            children: [
-                              Icon(
-                                Iconsax.wifi,
-                                color: Colors.white,
-                                size: 20.sp,
-                              ),
-                              SizedBox(width: 8.w),
-                              Text(
-                                'Softverse KDS',
-                                style: getTextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
+                      ),
+                      SizedBox(height: 24.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Iconsax.wifi, color: Colors.white, size: 20.sp),
+                          SizedBox(width: 8.w),
+                          Text(
+                            'Softverse POS',
+                            style: getTextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
+                          SizedBox(width: 32.w),
+                          GestureDetector(
+                            onTap: controller.pairAsKds,
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Iconsax.wifi,
                                   color: Colors.white,
+                                  size: 20.sp,
                                 ),
-                              ),
-                            ],
+                                SizedBox(width: 8.w),
+                                Text(
+                                  'Softverse KDS',
+                                  style: getTextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          Flexible(
+            fit: keyboardOpen ? FlexFit.tight : FlexFit.loose,
+            child: SingleChildScrollView(
+              child: Container(
+                width: double.infinity,
+                color: c.cardBg,
+                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Enter the Softverse main station IP to connect this KDS.',
+                      textAlign: TextAlign.center,
+                      style: getTextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: c.textPrimary,
+                      ),
+                    ),
+                    SizedBox(height: 16.h),
+                    TextField(
+                      controller: controller.mainStationController,
+                      keyboardType: TextInputType.url,
+                      textAlign: TextAlign.center,
+                      style: getTextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: c.textPrimary,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: 'http://192.168.0.104:8787',
+                        hintStyle: getTextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: c.textSecondary,
                         ),
-                      ],
+                        filled: true,
+                        fillColor: c.fieldBg,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.r),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 12.w,
+                          vertical: 14.h,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 16.h),
+                    Obx(
+                      () => GestureDetector(
+                        onTap: controller.isPairing.value
+                            ? null
+                            : controller.pairAsKds,
+                        child: Container(
+                          width: 180.w,
+                          height: 52.h,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: AppColors.brightBlue,
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          child: controller.isPairing.value
+                              ? SizedBox(
+                                  width: 20.w,
+                                  height: 20.w,
+                                  child: const CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Text(
+                                  'Connect',
+                                  style: getTextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 16.h),
+                    Text(
+                      'New to Softverse?',
+                      style: getTextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.brightBlue,
+                      ),
+                    ),
+                    SizedBox(height: 12.h),
+                    Text(
+                      'Help',
+                      style: getTextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.brightBlue,
+                      ),
+                    ),
+                    SizedBox(height: 16.h),
+                    Text(
+                      'Privacy Policy . Terms of Use',
+                      style: getTextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: c.textSecondary,
+                      ),
                     ),
                   ],
                 ),
               ),
-            ),
-          ),
-          Container(
-            width: double.infinity,
-            color: c.cardBg,
-            padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'To get started, pair this device in the Softverse POS settings.',
-                  textAlign: TextAlign.center,
-                  style: getTextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: c.textPrimary,
-                  ),
-                ),
-                SizedBox(height: 16.h),
-                Obx(
-                  () => Text(
-                    'Device name: ${controller.deviceName.value}',
-                    textAlign: TextAlign.center,
-                    style: getTextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: c.textSecondary,
-                    ),
-                  ),
-                ),
-                Obx(
-                  () => Text(
-                    'IP Address: ${controller.ipAddress.value}',
-                    textAlign: TextAlign.center,
-                    style: getTextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: c.textSecondary,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 16.h),
-                Text(
-                  'New to Softverse?',
-                  style: getTextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.brightBlue,
-                  ),
-                ),
-                SizedBox(height: 12.h),
-                Text(
-                  'Help',
-                  style: getTextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.brightBlue,
-                  ),
-                ),
-                SizedBox(height: 16.h),
-                Text(
-                  'Privacy Policy . Terms of Use',
-                  style: getTextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: c.textSecondary,
-                  ),
-                ),
-              ],
             ),
           ),
         ],

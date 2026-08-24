@@ -65,10 +65,19 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
 
   @override
   AppColorsExtension copyWith({
-    Color? cardBg, Color? textPrimary, Color? textSecondary,
-    Color? textHint, Color? textBody, Color? border,
-    Color? borderSubtle, Color? fieldBg, Color? tagBg,
-    Color? shimmer, Color? iconBg, Color? navBarBg, Color? shadow,
+    Color? cardBg,
+    Color? textPrimary,
+    Color? textSecondary,
+    Color? textHint,
+    Color? textBody,
+    Color? border,
+    Color? borderSubtle,
+    Color? fieldBg,
+    Color? tagBg,
+    Color? shimmer,
+    Color? iconBg,
+    Color? navBarBg,
+    Color? shadow,
   }) {
     return AppColorsExtension(
       cardBg: cardBg ?? this.cardBg,
@@ -88,7 +97,10 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
   }
 
   @override
-  AppColorsExtension lerp(covariant ThemeExtension<AppColorsExtension>? other, double t) {
+  AppColorsExtension lerp(
+    covariant ThemeExtension<AppColorsExtension>? other,
+    double t,
+  ) {
     if (other is! AppColorsExtension) return this;
     return AppColorsExtension(
       cardBg: Color.lerp(cardBg, other.cardBg, t)!,

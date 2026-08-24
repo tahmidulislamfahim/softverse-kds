@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:toastification/toastification.dart';
 import 'core/bindings/controller_binder.dart';
 import 'core/services/storage_service.dart';
 import 'core/utils/theme/theme.dart';
@@ -24,14 +25,16 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (_, child) {
-        return GetMaterialApp(
-          debugShowCheckedModeBanner: false,
-          initialRoute: AppRoute.getSplashScreen(),
-          getPages: AppRoute.routes,
-          initialBinding: ControllerBinder(),
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
-          themeMode: _initialThemeMode(),
+        return ToastificationWrapper(
+          child: GetMaterialApp(
+            debugShowCheckedModeBanner: false,
+            initialRoute: AppRoute.getSplashScreen(),
+            getPages: AppRoute.routes,
+            initialBinding: ControllerBinder(),
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: _initialThemeMode(),
+          ),
         );
       },
     );
