@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'package:get/get.dart' hide Response, MultipartFile;
 import 'package:http/http.dart';
 
 import '../models/response_data.dart';
-import '../utils/constants/api_constants.dart';
 import '../services/storage_service.dart';
 
 class NetworkCaller {
@@ -31,8 +29,11 @@ class NetworkCaller {
     }
   }
 
-  Future<ResponseData> postRequest(String url,
-      {Map<String, dynamic>? body, String? token}) async {
+  Future<ResponseData> postRequest(
+    String url, {
+    Map<String, dynamic>? body,
+    String? token,
+  }) async {
     log('POST Request: $url');
     try {
       final Response response = await post(
@@ -46,8 +47,11 @@ class NetworkCaller {
     }
   }
 
-  Future<ResponseData> patchRequest(String url,
-      {Map<String, dynamic>? body, String? token}) async {
+  Future<ResponseData> patchRequest(
+    String url, {
+    Map<String, dynamic>? body,
+    String? token,
+  }) async {
     log('PATCH Request: $url');
     try {
       final Response response = await patch(

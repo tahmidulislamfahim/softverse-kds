@@ -83,6 +83,20 @@ class MainStationClient {
     }
   }
 
+  Future<bool> clearAllOpenOrders() async {
+    final baseUrl = StorageService.mainStationUrl;
+    if (baseUrl == null || baseUrl.isEmpty) return false;
+
+    try {
+      final response = await http
+          .post(Uri.parse('$baseUrl/kds/orders/complete-all'))
+          .timeout(const Duration(seconds: 5));
+      return response.statusCode >= 200 && response.statusCode < 300;
+    } catch (_) {
+      return false;
+    }
+  }
+
   Stream<MainStationEvent> watchOrders() async* {
     while (true) {
       final baseUrl = StorageService.mainStationUrl;
@@ -104,7 +118,11 @@ class MainStationClient {
         await for (final raw in socket) {
           final data = jsonDecode(raw.toString()) as Map<String, dynamic>;
           final type = data['type']?.toString() ?? '';
-          if (type != 'order' && type != 'order_completed') continue;
+          if (type != 'order' &&
+              type != 'order_completed' &&
+              type != 'orders_completed') {
+            continue;
+          }
           final order = data['order'];
           if (type == 'order' && order is Map) {
             yield MainStationEvent(
@@ -122,6 +140,14 @@ class MainStationClient {
               order: order is Map
                   ? KdsOrderModel.fromJson(order.cast<String, dynamic>())
                   : null,
+            );
+          } else if (type == 'orders_completed') {
+            final ids = data['ids'];
+            yield MainStationEvent(
+              type: type,
+              keys: ids is List
+                  ? ids.map((id) => id.toString()).toList()
+                  : const [],
             );
           }
         }
