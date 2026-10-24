@@ -17,10 +17,14 @@ class SplashScreen extends GetView<SplashController> {
     return Scaffold(
       backgroundColor: c.cardBg,
       body: Center(
-        child: Image.asset(
-          'assets/icons/logo.png',
-          width: 240.w,
-          height: 240.w,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 240, maxHeight: 240),
+          child: Image.asset(
+            'assets/icons/logo.png',
+            width: 240.w,
+            height: 240.w,
+            fit: BoxFit.contain,
+          ),
         ),
       ),
     );

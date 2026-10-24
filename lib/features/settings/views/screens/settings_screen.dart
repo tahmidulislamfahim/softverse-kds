@@ -1,3 +1,4 @@
+import '../../../../core/utils/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,7 +22,9 @@ class SettingsScreen extends GetView<SettingsController> {
       appBar: const GradientAppBar(title: 'Settings'),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-        child: Column(
+        child: ResponsiveCenter(
+          maxWidth: 680,
+          child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Obx(
@@ -132,6 +135,7 @@ class SettingsScreen extends GetView<SettingsController> {
           ],
         ),
       ),
+    ),
       bottomNavigationBar: const KdsBottomNav(),
     );
   }
@@ -383,15 +387,18 @@ class _InlineRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: getTextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              textAlign: TextAlign.left,
-              color: AppColors.brightBlue,
+          Expanded(
+            child: Text(
+              label,
+              style: getTextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                textAlign: TextAlign.left,
+                color: AppColors.brightBlue,
+              ),
             ),
           ),
+          SizedBox(width: 8.w),
           Text(
             value,
             style: getTextStyle(fontSize: 14, color: AppColors.dotSemiActive),

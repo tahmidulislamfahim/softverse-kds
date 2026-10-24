@@ -72,6 +72,7 @@ class OrderCard extends StatelessWidget {
                       ],
                     ),
                   ),
+                  SizedBox(width: 8.w),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -153,6 +154,7 @@ class OrderCard extends StatelessWidget {
                             ),
                           ),
                         ),
+                        SizedBox(width: 8.w),
                         Text(
                           'x ${order.items[i].quantity}',
                           style: getTextStyle(

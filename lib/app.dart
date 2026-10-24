@@ -1,3 +1,4 @@
+import 'core/utils/responsive.dart';
 import 'package:softverse_kds/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,21 +21,29 @@ class MyApp extends StatelessWidget {
       ),
     );
 
-    return ScreenUtilInit(
-      designSize: const Size(390, 884),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      builder: (_, child) {
-        return ToastificationWrapper(
-          child: GetMaterialApp(
-            debugShowCheckedModeBanner: false,
-            initialRoute: AppRoute.getSplashScreen(),
-            getPages: AppRoute.routes,
-            initialBinding: ControllerBinder(),
-            theme: AppTheme.lightTheme,
-            darkTheme: AppTheme.darkTheme,
-            themeMode: _initialThemeMode(),
-          ),
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        final screenSize = MediaQuery.sizeOf(context);
+        final designSize = AppResponsive.getDesignSize(screenSize);
+
+        return ScreenUtilInit(
+          key: ValueKey('${designSize.width}_${designSize.height}'),
+          designSize: designSize,
+          minTextAdapt: true,
+          splitScreenMode: true,
+          builder: (_, child) {
+            return ToastificationWrapper(
+              child: GetMaterialApp(
+                debugShowCheckedModeBanner: false,
+                initialRoute: AppRoute.getSplashScreen(),
+                getPages: AppRoute.routes,
+                initialBinding: ControllerBinder(),
+                theme: AppTheme.lightTheme,
+                darkTheme: AppTheme.darkTheme,
+                themeMode: _initialThemeMode(),
+              ),
+            );
+          },
         );
       },
     );
